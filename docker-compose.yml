@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: microservices
+      PGDATA: /data/postgres
+    volumes:
+      - postgres:/data/postgres
+      - ./sql/schemas.sql:/docker-entrypoint-initdb.d/1-schemas.sql
+      - ./sql/data.sql:/docker-entrypoint-initdb.d/2-data.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - postgres
+
+networks:
+  postgres:
+    driver: bridge
+
+volumes:
+  postgres:
