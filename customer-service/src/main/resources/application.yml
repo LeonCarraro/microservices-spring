@@ -1,0 +1,10 @@
+server:
+  port: 3000
+  servlet:
+    context-path: /api/customers
+
+spring:
+  application:
+    name: customer-service
+  main:
+    banner-mode: off
