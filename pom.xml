@@ -12,6 +12,7 @@
 
     <modules>
         <module>customer-service</module>
+        <module>fraud-checking-service</module>
     </modules>
 
     <properties>
