@@ -17,7 +17,7 @@ public class FraudCheckController {
 
     private final FraudCheckService fraudCheckService;
 
-    @GetMapping
+    @GetMapping("/{customerId}")
     public boolean isFraudulentCustomer(@PathVariable final Long customerId) {
         long countIsFraudulentCheck = System.currentTimeMillis();
         boolean isFraudulent = fraudCheckService.isFraudulentCustomer(customerId);
