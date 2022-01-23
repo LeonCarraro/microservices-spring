@@ -38,7 +38,7 @@ public class CustomerService {
         httpHeaders.setContentType(MediaType.valueOf(MediaType.APPLICATION_JSON_VALUE));
 
         ResponseEntity<Boolean> isFraudulentResponse = restTemplate.exchange(
-                "http://localhost:3002/api/frauds-checking/" + customer.getId(),
+                "http://FRAUD-CHECKING-SERVICE/api/frauds-checking/" + customer.getId(),
                 HttpMethod.GET,
                 new HttpEntity<>(httpHeaders),
                 Boolean.class);
