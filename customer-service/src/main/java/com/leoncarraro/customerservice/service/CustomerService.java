@@ -1,15 +1,14 @@
 package com.leoncarraro.customerservice.service;
 
+import com.leoncarraro.clientsopenfeign.clients.fraudcheckingservice.FraudCheckingServiceClient;
 import com.leoncarraro.customerservice.domain.dto.CustomerDTO;
 import com.leoncarraro.customerservice.domain.entity.Customer;
 import com.leoncarraro.customerservice.domain.vo.CustomerVO;
 import com.leoncarraro.customerservice.repository.CustomerRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
 @Service
 @Slf4j
@@ -18,7 +17,7 @@ public class CustomerService {
 
     private final CustomerRepository customerRepository;
 
-    private final RestTemplate restTemplate;
+    private final FraudCheckingServiceClient fraudCheckingServiceClient;
 
     @Transactional
     public CustomerDTO create(CustomerVO customerVO) {
@@ -34,16 +33,9 @@ public class CustomerService {
 
         customer = customerRepository.save(customer);
 
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.valueOf(MediaType.APPLICATION_JSON_VALUE));
+        boolean isFraudulentResponse = fraudCheckingServiceClient.isFraudulentCustomer(customer.getId());
 
-        ResponseEntity<Boolean> isFraudulentResponse = restTemplate.exchange(
-                "http://FRAUD-CHECKING-SERVICE/api/frauds-checking/" + customer.getId(),
-                HttpMethod.GET,
-                new HttpEntity<>(httpHeaders),
-                Boolean.class);
-
-        if (Boolean.TRUE.equals(isFraudulentResponse.getBody())) {
+        if (Boolean.TRUE.equals(isFraudulentResponse)) {
             throw new IllegalStateException("Fraudulent customer");
         }
 
