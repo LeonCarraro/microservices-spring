@@ -16,6 +16,7 @@
         <module>eureka-discovery-service</module>
         <module>clients-openfeign</module>
         <module>api-gateway</module>
+        <module>notification-service</module>
     </modules>
 
     <properties>
