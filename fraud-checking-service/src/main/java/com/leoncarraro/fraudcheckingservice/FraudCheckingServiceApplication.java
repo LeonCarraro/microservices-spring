@@ -8,8 +8,8 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 @EnableEurekaClient
 public class FraudCheckingServiceApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(FraudCheckingServiceApplication.class, args);
-    }
+	public static void main(final String[] args) {
+		SpringApplication.run(FraudCheckingServiceApplication.class, args);
+	}
 
 }

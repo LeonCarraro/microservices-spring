@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FeignClient(value = "NOTIFICATION-SERVICE", path = "/api/notifications")
 public interface NotificationServiceClient {
 
-    @PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
-    void sendNotification(@RequestBody NotificationVO notificationVO);
+	@PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
+	void sendNotification(@RequestBody NotificationVO notificationVO);
 
 }

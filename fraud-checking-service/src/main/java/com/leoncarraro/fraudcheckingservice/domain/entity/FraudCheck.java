@@ -1,13 +1,19 @@
 package com.leoncarraro.fraudcheckingservice.domain.entity;
 
-import com.leoncarraro.fraudcheckingservice.constant.DatabaseConstants;
+import java.time.LocalDateTime;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
-import java.time.LocalDateTime;
+import com.leoncarraro.fraudcheckingservice.constant.DatabaseConstants;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,14 +23,14 @@ import java.time.LocalDateTime;
 @Table(schema = DatabaseConstants.SCHEMA_FRAUD_CHECKING_SERVICE, name = DatabaseConstants.TABLE_FRAUD_CHECK)
 public class FraudCheck {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    private Long customerId;
+	private Long customerId;
 
-    private boolean isFraudulent;
+	private boolean isFraudulent;
 
-    private LocalDateTime createdAt;
+	private LocalDateTime createdAt;
 
 }

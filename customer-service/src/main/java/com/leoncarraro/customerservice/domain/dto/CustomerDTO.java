@@ -9,6 +9,6 @@ import lombok.Setter;
 @Builder
 public class CustomerDTO {
 
-    private Long id;
+	private Long id;
 
 }

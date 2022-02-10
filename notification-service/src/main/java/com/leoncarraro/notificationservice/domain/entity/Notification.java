@@ -1,12 +1,17 @@
 package com.leoncarraro.notificationservice.domain.entity;
 
-import com.leoncarraro.notificationservice.constant.DatabaseConstants;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import com.leoncarraro.notificationservice.constant.DatabaseConstants;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,14 +21,14 @@ import javax.persistence.*;
 @Table(schema = DatabaseConstants.SCHEMA_NOTIFICATION_SERVICE, name = DatabaseConstants.TABLE_NOTIFICATION)
 public class Notification {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    private Long customerId;
+	private Long customerId;
 
-    private String message;
+	private String message;
 
-    private boolean sent;
+	private boolean sent;
 
 }
