@@ -19,14 +19,35 @@ services:
       - postgres
 
   zipkin:
-    image: openzipkin/zipkin
     container_name: zipkin
+    image: openzipkin/zipkin
     ports:
       - "9411:9411"
+    networks:
+      - zipkin
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3.9.11-management-alpine
+    volumes:
+      - rabbitmq:/var/lib/rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=root
+      - RABBITMQ_DEFAULT_PASS=root
 
 networks:
   postgres:
     driver: bridge
+  zipkin:
+    driver: bridge
+  rabbitmq:
+    driver: bridge
 
 volumes:
   postgres:
+  rabbitmq:
