@@ -14,7 +14,10 @@ public class NotificationService {
 
 	private final NotificationRepository notificationRepository;
 
-	public void sendNotification(final NotificationVO notificationVO) {
+	public void send(final NotificationVO notificationVO) throws InterruptedException {
+		// Simulating a slow notification push
+		Thread.sleep(500);
+
 		Notification notification = Notification.builder() //
 				.customerId(notificationVO.getCustomerId()) //
 				.message(notificationVO.getMessage()) //

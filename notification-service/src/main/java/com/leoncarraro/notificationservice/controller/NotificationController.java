@@ -21,11 +21,11 @@ public class NotificationController {
 	private final NotificationService notificationService;
 
 	@PostMapping
-	public void sendNotification(@RequestBody final NotificationVO notificationVO) {
+	public void sendNotification(@RequestBody final NotificationVO notificationVO) throws InterruptedException {
 		log.info("Sending notification...");
 		long count = System.currentTimeMillis();
 
-		notificationService.sendNotification(notificationVO);
+		notificationService.send(notificationVO);
 
 		log.info("Notification for customer with id {} sent in {}ms", //
 				notificationVO.getCustomerId(), //

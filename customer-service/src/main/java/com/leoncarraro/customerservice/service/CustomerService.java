@@ -6,8 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.leoncarraro.amqp.component.RabbitMQMessageProducer;
+import com.leoncarraro.amqp.configuration.AMQPConfiguration;
 import com.leoncarraro.clientsopenfeign.clients.fraudcheckingservice.FraudCheckingServiceClient;
-import com.leoncarraro.clientsopenfeign.clients.notificationservice.NotificationServiceClient;
 import com.leoncarraro.clientsopenfeign.clients.notificationservice.NotificationVO;
 import com.leoncarraro.customerservice.domain.dto.CustomerDTO;
 import com.leoncarraro.customerservice.domain.entity.Customer;
@@ -19,11 +20,13 @@ import com.leoncarraro.customerservice.repository.CustomerRepository;
 @AllArgsConstructor
 public class CustomerService {
 
-	private final CustomerRepository customerRepository;
+	private final RabbitMQMessageProducer rabbitMQMessageProducer;
+
+	private final AMQPConfiguration amqpConfiguration;
 
 	private final FraudCheckingServiceClient fraudCheckingServiceClient;
 
-	private final NotificationServiceClient notificationServiceClient;
+	private final CustomerRepository customerRepository;
 
 	@Transactional
 	public CustomerDTO create(final CustomerVO customerVO) {
@@ -45,12 +48,14 @@ public class CustomerService {
 			throw new IllegalStateException("Fraudulent customer");
 		}
 
-		// TODO: Make it async. i.e: add to a queue
-		notificationServiceClient.sendNotification( //
-				NotificationVO.builder() //
-						.customerId(customer.getId()) //
-						.message(String.format("Notification message for customer %s", customer.getFirstName())) //
-						.build());
+		NotificationVO notificationVO = NotificationVO.builder() //
+				.customerId(customer.getId()) //
+				.message(String.format("Notification message for customer %s", customer.getFirstName())) //
+				.build();
+
+		rabbitMQMessageProducer.publish(notificationVO, //
+				amqpConfiguration.getRabbitmq().getExchange().getName(), //
+				amqpConfiguration.getRabbitmq().getRoutingKey().getInternalNotification());
 
 		return CustomerDTO.builder() //
 				.id(customer.getId()) //
