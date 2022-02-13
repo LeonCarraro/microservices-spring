@@ -29,6 +29,8 @@
 		<spring.boot.dependencies.version>2.6.3</spring.boot.dependencies.version>
 		<spring.cloud.dependencies.version>2021.0.0</spring.cloud.dependencies.version>
 		<spring.boot.maven.plugin.version>2.6.3</spring.boot.maven.plugin.version>
+		<jib.maven.plugin.version>3.2.0</jib.maven.plugin.version>
+		<image.name>lcarraro/${project.artifactId}:${project.version}</image.name>
 	</properties>
 
 	<dependencyManagement>
@@ -76,6 +78,38 @@
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-maven-plugin</artifactId>
 					<version>${spring.boot.maven.plugin.version}</version>
+					<executions>
+						<execution>
+							<goals>
+								<goal>repackage</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+
+				<plugin>
+					<groupId>com.google.cloud.tools</groupId>
+					<artifactId>jib-maven-plugin</artifactId>
+					<version>${jib.maven.plugin.version}</version>
+					<configuration>
+						<from>
+							<image>openjdk:11</image>
+						</from>
+						<to>
+							<image>docker.io/${image.name}</image>
+							<tags>
+								<tag>latest</tag>
+							</tags>
+						</to>
+					</configuration>
+					<executions>
+						<execution>
+							<phase>package</phase>
+							<goals>
+								<goal>build</goal>
+							</goals>
+						</execution>
+					</executions>
 				</plugin>
 			</plugins>
 		</pluginManagement>

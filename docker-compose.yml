@@ -17,6 +17,7 @@ services:
       - "5432:5432"
     networks:
       - postgres
+    restart: unless-stopped
 
   zipkin:
     container_name: zipkin
@@ -25,12 +26,15 @@ services:
       - "9411:9411"
     networks:
       - zipkin
+    restart: unless-stopped
 
   rabbitmq:
     container_name: rabbitmq
     image: rabbitmq:3.9.11-management-alpine
     volumes:
       - rabbitmq:/var/lib/rabbitmq
+      - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+      - ./rabbitmq/definitions.json:/etc/rabbitmq/definitions.json
     ports:
       - "5672:5672"
       - "15672:15672"
@@ -39,6 +43,89 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=root
       - RABBITMQ_DEFAULT_PASS=root
+    restart: unless-stopped
+
+  eureka-discovery-service:
+    container_name: eureka-discovery-service
+    image: lcarraro/eureka-discovery-service:latest
+    ports:
+      - "8761:8761"
+    networks:
+      - spring
+      - zipkin
+    depends_on:
+      - zipkin
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  api-gateway:
+    container_name: api-gateway
+    image: lcarraro/api-gateway:latest
+    ports:
+      - "8760:8760"
+    networks:
+      - spring
+      - zipkin
+    depends_on:
+      - zipkin
+      - eureka-discovery-service
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  customer-service:
+    container_name: customer-service
+    image: lcarraro/customer-service:latest
+    ports:
+      - "3000:3000"
+    networks:
+      - spring
+      - zipkin
+      - rabbitmq
+      - postgres
+    depends_on:
+      - zipkin
+      - postgres
+      - rabbitmq
+      - eureka-discovery-service
+      - api-gateway
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  fraud-checking-service:
+    container_name: fraud-checking-service
+    image: lcarraro/fraud-checking-service:latest
+    ports:
+      - "3002:3002"
+    networks:
+      - spring
+      - zipkin
+      - postgres
+    depends_on:
+      - zipkin
+      - postgres
+      - eureka-discovery-service
+      - api-gateway
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  notification-service:
+    container_name: notification-service
+    image: lcarraro/notification-service:latest
+    ports:
+      - "3004:3004"
+    networks:
+      - spring
+      - zipkin
+      - rabbitmq
+      - postgres
+    depends_on:
+      - zipkin
+      - postgres
+      - rabbitmq
+      - eureka-discovery-service
+      - api-gateway
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
 
 networks:
   postgres:
@@ -46,6 +133,8 @@ networks:
   zipkin:
     driver: bridge
   rabbitmq:
+    driver: bridge
+  spring:
     driver: bridge
 
 volumes:
